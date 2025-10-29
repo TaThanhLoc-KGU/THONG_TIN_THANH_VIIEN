@@ -5,11 +5,14 @@
 ## Tính Năng
 
 - 🔍 **Tìm kiếm linh hoạt**: Tra cứu theo Họ tên, MSSV (Mã số sinh viên), hoặc Mã thành viên (KCMC00...)
+- 📋 **Hiển thị nhiều kết quả**: Khi tìm kiếm có nhiều người trùng tên, ứng dụng sẽ hiển thị toàn bộ kết quả
+- 🎯 **Hoạt động được tham gia**: Chỉ hiển thị những hoạt động mà thành viên đã tham gia (không hiển thị những hoạt động chưa tham gia)
+- ✨ **Badge hoạt động ngầu**: Các hoạt động được tham gia hiển thị dưới dạng badge màu xanh với animation smooth
 - 📱 **Responsive Design**: Tương thích với tất cả các thiết bị (máy tính, tablet, điện thoại)
 - 📊 **Hiển thị chi tiết**: Thông tin rõ ràng, dễ đọc với các mục:
   - Thông tin cá nhân (Mã thành viên, MSSV, Họ tên, Lớp, Khoa)
-  - Trạng thái tham gia (Đóng góp, Sinh hoạt, Cài máy, Hoạt động bảo tàng)
-- ✨ **Giao diện hiện đại**: UI/UX được tối ưu với gradient, shadow effects và hover states
+  - Hoạt động đã tham gia (dạng badge ngầu)
+- 🎨 **Giao diện hiện đại**: UI/UX được tối ưu với gradient, shadow effects, hover animations
 
 ## Hướng Dẫn Sử Dụng
 
@@ -23,8 +26,17 @@
 
 ### Cách Tìm Kiếm
 - **Theo Họ tên**: Nhập một phần tên (không cần dấu), ví dụ: "Lộc", "Thanh"
+  - Nếu có nhiều người cùng tên, ứng dụng sẽ hiển thị **toàn bộ kết quả** dưới dạng danh sách card
+  - Nhấp vào bất kỳ card nào để xem chi tiết hoạt động
 - **Theo MSSV**: Nhập mã số sinh viên, ví dụ: "2024001"
 - **Theo Mã thành viên**: Nhập mã CLB, ví dụ: "KCMC001"
+
+### Xem Chi Tiết Hoạt Động
+1. Sau khi tìm kiếm, danh sách kết quả sẽ hiển thị
+2. Nhấp vào một thành viên để xem chi tiết
+3. Phần "Hoạt động đã tham gia" sẽ hiển thị **chỉ những hoạt động mà thành viên đã tham gia**
+4. Mỗi hoạt động được hiển thị dưới dạng **badge màu xanh** với checkmark và animation
+5. Nếu chưa tham gia hoạt động nào, sẽ hiển thị thông báo "Chưa tham gia hoạt động nào"
 
 ## Cấu Trúc Dữ Liệu
 
@@ -71,7 +83,7 @@ File `clb_kcmc_data.json` cần có cấu trúc sau:
 
 ## Tác Giả
 
-CLB KCMC - Khoa Công nghệ Thông tin
+CLB KCMC - TẠ THÀNH LỘC
 
 ## Giấy Phép
 

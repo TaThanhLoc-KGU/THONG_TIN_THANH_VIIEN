@@ -152,6 +152,85 @@
       color: #374151;
     }
 
+    /* Results List */
+    .results-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .member-card {
+      background: linear-gradient(135deg, #f8f9fa 0%, #eef0f5 100%);
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-left: 5px solid #2563eb;
+    }
+    .member-card:hover {
+      border-color: #2563eb;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+      transform: translateX(4px);
+      background: linear-gradient(135deg, #eef2f7 0%, #e5ecf3 100%);
+    }
+    .member-card h3 {
+      margin: 0 0 8px;
+      color: #1e3a8a;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .member-card p {
+      margin: 4px 0;
+      color: #4b5563;
+      font-size: 14px;
+    }
+    .member-code {
+      display: inline-block;
+      background: #2563eb;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12px;
+      margin-right: 8px;
+    }
+
+    /* Activity Badges */
+    .activities {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .activity-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      animation: slideIn 0.3s ease;
+    }
+    .activity-badge::before {
+      content: "✓";
+      font-weight: 700;
+      font-size: 14px;
+    }
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     /* Responsive Design */
     @media (max-width: 768px) {
       h1 {
@@ -181,6 +260,19 @@
       }
       .row {
         padding: 10px;
+      }
+      .member-card {
+        padding: 14px;
+      }
+      .member-card h3 {
+        font-size: 16px;
+      }
+      .activities {
+        gap: 8px;
+      }
+      .activity-badge {
+        padding: 6px 12px;
+        font-size: 12px;
       }
     }
 
@@ -229,6 +321,30 @@
       .muted {
         font-size: 14px;
       }
+      .member-card {
+        padding: 12px;
+      }
+      .member-card h3 {
+        font-size: 15px;
+        margin-bottom: 6px;
+      }
+      .member-card p {
+        font-size: 13px;
+      }
+      .member-code {
+        padding: 3px 8px;
+        font-size: 11px;
+      }
+      .activities {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .activity-badge {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 12px;
+        font-size: 12px;
+      }
     }
   </style>
 </head>
@@ -246,6 +362,7 @@
 
   <script>
     let members = [];
+    let currentFoundList = [];
 
     // Tải dữ liệu JSON (đặt file clb_kcmc_data.json cùng thư mục index.html)
     fetch('clb_kcmc_data.json')
@@ -261,11 +378,55 @@
         .trim();
     }
 
-    function renderResult(item) {
+    function renderResultsList(items) {
       const r = document.getElementById('result');
       r.style.display = 'block';
+
+      const resultCount = items.length;
+      const listHTML = items.map((item, index) => `
+        <div class="member-card" onclick="renderMemberDetails(${index}, currentFoundList)">
+          <h3>${item["Họ và tên"] ?? "N/A"}</h3>
+          <p><span class="member-code">${item["Mã thành viên"] ?? "N/A"}</span><span class="member-code" style="background: #10b981;">${item["Mã số sinh viên"] ?? "N/A"}</span></p>
+          <p>📚 <strong>Lớp:</strong> ${item["Lớp"] ?? "-"} | <strong>Khoa:</strong> ${item["Khoa"] ?? "-"}</p>
+        </div>
+      `).join('');
+
       r.innerHTML = `
-        <h2>Thông tin thành viên</h2>
+        <h2>🔍 Tìm thấy ${resultCount} kết quả</h2>
+        <div class="results-list">
+          ${listHTML}
+        </div>
+        <div class="divider"></div>
+        <p class="muted">💡 Nhấp vào một thành viên để xem chi tiết hoạt động</p>
+      `;
+    }
+
+    function renderMemberDetails(index, foundList) {
+      const item = foundList[index];
+      const r = document.getElementById('result');
+
+      // Lọc hoạt động chỉ lấy những cái "Có"
+      const activityData = [
+        { name: "Đóng góp Trung thu", value: item["Đóng góp trung thu"] },
+        { name: "Sinh hoạt Câu lạc bộ", value: item["Sinh hoạt Câu lạc bộ"] },
+        { name: "Cài máy tại Trung tâm học liệu", value: item["Tham gia cài máy tính tại Trung tâm học liệu - Thực hành"] },
+        { name: "Hoạt động tại Bảo tàng (CS1)", value: item["Tham gia hoạt động tại bảo tàng tỉnh An Giang - Cơ sở 1"] }
+      ];
+
+      const participatedActivities = activityData.filter(a =>
+        a.value && (a.value.toString().toLowerCase() === 'có' || a.value.toString().toLowerCase() === 'yes')
+      );
+
+      const activitiesHTML = participatedActivities.length > 0
+        ? participatedActivities.map(a => `<span class="activity-badge">${a.name}</span>`).join('')
+        : '<p class="muted">Chưa tham gia hoạt động nào</p>';
+
+      r.innerHTML = `
+        <div style="margin-bottom: 20px;">
+          <button onclick="window.location.reload()" style="background: #6b7280; padding: 10px 16px; font-size: 14px;">← Quay lại danh sách</button>
+        </div>
+
+        <h2>📋 Thông tin thành viên</h2>
         <div class="grid">
           <div class="row"><div class="label">Mã thành viên:</div><div class="value"><b>${item["Mã thành viên"] ?? "-"}</b></div></div>
           <div class="row"><div class="label">Mã số sinh viên:</div><div class="value">${item["Mã số sinh viên"] ?? "-"}</div></div>
@@ -276,12 +437,9 @@
         </div>
 
         <div class="divider"></div>
-        <h2>Trạng thái tham gia</h2>
-        <div class="grid">
-          <div class="row"><div class="label">Đóng góp Trung thu:</div><div class="value">${item["Đóng góp trung thu"] ?? "-"}</div></div>
-          <div class="row"><div class="label">Sinh hoạt Câu lạc bộ:</div><div class="value">${item["Sinh hoạt Câu lạc bộ"] ?? "-"}</div></div>
-          <div class="row"><div class="label">Cài máy tại Trung tâm học liệu:</div><div class="value">${item["Tham gia cài máy tính tại Trung tâm học liệu - Thực hành"] ?? "-"}</div></div>
-          <div class="row"><div class="label">Hoạt động tại Bảo tàng (CS1):</div><div class="value">${item["Tham gia hoạt động tại bảo tàng tỉnh An Giang - Cơ sở 1"] ?? "-"}</div></div>
+        <h2>🎯 Hoạt động đã tham gia</h2>
+        <div class="activities">
+          ${activitiesHTML}
         </div>
       `;
     }
@@ -314,20 +472,11 @@
         return;
       }
 
-      // Nếu nhiều kết quả, ưu tiên khớp chính xác mã thành viên/mssv trước
-      const exact = foundList.find(m =>
-        normalizeText(m["Mã thành viên"]) === keyword ||
-        normalizeText(m["Mã số sinh viên"]) === keyword
-      );
-      renderResult(exact || foundList[0]);
+      // Lưu danh sách tìm được để dùng khi click vào thành viên
+      currentFoundList = foundList;
 
-      // Nếu nhiều hơn 1 kết quả, gợi ý thêm
-      if (!exact && foundList.length > 1) {
-        const suggestion = foundList.slice(1, 6).map(x =>
-          `• ${x["Họ và tên"]} — ${x["Mã số sinh viên"]} — ${x["Mã thành viên"]}`
-        ).join('<br/>');
-        resultDiv.innerHTML += `<div class="divider"></div><div class="muted"><b>Có ${foundList.length} kết quả.</b><br/>Gợi ý thêm:<br/>${suggestion}</div>`;
-      }
+      // Hiển thị tất cả kết quả tìm được
+      renderResultsList(foundList);
     }
 
     // Bind sự kiện
