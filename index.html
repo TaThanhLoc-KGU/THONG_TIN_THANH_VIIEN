@@ -240,11 +240,12 @@
       align-items: center;
     }
     .poster-image {
-      max-width: 100%;
-      height: auto;
+      width: 100%;
+      height: 100%;
       border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       animation: fadeIn 0.4s ease;
+      object-fit: contain;
     }
     @keyframes fadeIn {
       from {
@@ -552,8 +553,8 @@
         </div>
 
         <div class="poster-section">
-          <div style="width: 100%; text-align: center;">
-            <img src="THÔNG BÁO THU PHÍ THÀNH VIÊN CLB.png" alt="Thông báo thu phí CLB" class="poster-image" style="max-width: 600px;">
+          <div style="width: 100%; height: 500px; text-align: center;">
+            <img src="THÔNG BÁO THU PHÍ THÀNH VIÊN CLB.png" alt="Thông báo thu phí CLB" class="poster-image">
           </div>
           <div class="payment-info">
             <h3>💳 Thông tin chuyển khoản</h3>
@@ -561,28 +562,28 @@
               <div class="payment-icon">🏦</div>
               <div>
                 <strong>Ngân hàng:</strong>
-                <span>Ngân hàng TMCP Kỹ Thương Việt Nam (Techcombank)</span>
+                <span>Ngân hàng Kiên Long (Kien Long Bank)</span>
               </div>
             </div>
             <div class="payment-detail">
               <div class="payment-icon">💰</div>
               <div>
                 <strong>Số TK:</strong>
-                <span id="account-number">19038889789018</span>
+                <span id="account-number">33706704</span>
               </div>
             </div>
             <div class="payment-detail">
               <div class="payment-icon">👤</div>
               <div>
                 <strong>Chủ TK:</strong>
-                <span>NGUYEN HOANG KIEN</span>
+                <span>Ta Thanh Loc</span>
               </div>
             </div>
             <div class="payment-detail">
               <div class="payment-icon">📝</div>
               <div>
                 <strong>Nội dung:</strong>
-                <span>${item["Họ và tên"] ?? "CLB KCMC"}</span>
+                <span>${item["Mã thành viên"]}</span>
               </div>
             </div>
             <button class="copy-btn" onclick="copyAccountNumber()">📋 Sao chép số tài khoản</button>
