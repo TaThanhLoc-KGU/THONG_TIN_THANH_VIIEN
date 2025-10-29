@@ -231,6 +231,95 @@
       }
     }
 
+    /* Poster and Payment Section */
+    .poster-section {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin: 24px 0;
+      align-items: center;
+    }
+    .poster-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.4s ease;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    .payment-info {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+    }
+    .payment-info h3 {
+      margin: 0 0 16px;
+      font-size: 20px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .payment-detail {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      align-items: center;
+    }
+    .payment-detail strong {
+      min-width: 100px;
+      font-weight: 700;
+    }
+    .payment-detail span {
+      flex: 1;
+      word-break: break-all;
+    }
+    .payment-icon {
+      font-size: 24px;
+      min-width: 30px;
+      text-align: center;
+    }
+    .copy-btn {
+      background: white;
+      color: #059669;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      margin-top: 8px;
+      width: 100%;
+    }
+    .copy-btn:hover {
+      background: #f0fdf4;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+    }
+    .copy-feedback {
+      display: none;
+      text-align: center;
+      margin-top: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #10b981;
+    }
+
     /* Responsive Design */
     @media (max-width: 768px) {
       h1 {
@@ -345,6 +434,26 @@
         padding: 10px 12px;
         font-size: 12px;
       }
+      .poster-section {
+        margin: 16px 0;
+        gap: 16px;
+      }
+      .payment-info {
+        max-width: 100%;
+        padding: 16px;
+      }
+      .payment-info h3 {
+        font-size: 18px;
+        margin-bottom: 12px;
+      }
+      .payment-detail {
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      .copy-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+      }
     }
   </style>
 </head>
@@ -441,7 +550,57 @@
         <div class="activities">
           ${activitiesHTML}
         </div>
+
+        <div class="poster-section">
+          <div style="width: 100%; text-align: center;">
+            <img src="THÔNG BÁO THU PHÍ THÀNH VIÊN CLB.png" alt="Thông báo thu phí CLB" class="poster-image" style="max-width: 600px;">
+          </div>
+          <div class="payment-info">
+            <h3>💳 Thông tin chuyển khoản</h3>
+            <div class="payment-detail">
+              <div class="payment-icon">🏦</div>
+              <div>
+                <strong>Ngân hàng:</strong>
+                <span>Ngân hàng TMCP Kỹ Thương Việt Nam (Techcombank)</span>
+              </div>
+            </div>
+            <div class="payment-detail">
+              <div class="payment-icon">💰</div>
+              <div>
+                <strong>Số TK:</strong>
+                <span id="account-number">19038889789018</span>
+              </div>
+            </div>
+            <div class="payment-detail">
+              <div class="payment-icon">👤</div>
+              <div>
+                <strong>Chủ TK:</strong>
+                <span>NGUYEN HOANG KIEN</span>
+              </div>
+            </div>
+            <div class="payment-detail">
+              <div class="payment-icon">📝</div>
+              <div>
+                <strong>Nội dung:</strong>
+                <span>${item["Họ và tên"] ?? "CLB KCMC"}</span>
+              </div>
+            </div>
+            <button class="copy-btn" onclick="copyAccountNumber()">📋 Sao chép số tài khoản</button>
+            <div class="copy-feedback" id="copy-feedback">✓ Đã sao chép!</div>
+          </div>
+        </div>
       `;
+    }
+
+    function copyAccountNumber() {
+      const accountNumber = document.getElementById('account-number').textContent;
+      navigator.clipboard.writeText(accountNumber).then(() => {
+        const feedback = document.getElementById('copy-feedback');
+        feedback.style.display = 'block';
+        setTimeout(() => {
+          feedback.style.display = 'none';
+        }, 2000);
+      }).catch(err => console.error('Lỗi sao chép:', err));
     }
 
     function searchMember() {
