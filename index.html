@@ -513,15 +513,15 @@
 
     function isParticipated(value) {
       if (!value) return false;
-      const v = normalizeText(value);
-      // Kiểm tra các dạng thường gặp: "Đã tham gia", "Có", "Yes", "1", "x"
-      // Đối với "Đã tham gia", sau normalize sẽ thành "da tham gia"
+      const str = String(value).toLowerCase().trim();
+      // Kiểm tra trực tiếp các dạng thường gặp trong dữ liệu
+      // "Đã tham gia", "Có", "Yes", "1", "x"
       return (
-        v.startsWith('da ') ||        // "Đã tham gia" => "da tham gia"
-        v === 'co' ||                  // "Có"
-        v === 'yes' ||                 // "Yes"
-        v === 'x' ||                   // "x"
-        v === '1'                      // "1"
+        str.includes('đã') ||         // "Đã tham gia"
+        str === 'có' ||                // "Có"
+        str === 'yes' ||               // "Yes"
+        str === 'x' ||                 // "x"
+        str === '1'                    // "1"
       );
     }
 
