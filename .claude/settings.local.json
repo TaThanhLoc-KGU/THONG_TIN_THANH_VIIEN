@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git push:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nEnhance search results and activity display\n\n- Display all search results as clickable cards instead of single result\n- Show only completed activities using green badge style with checkmark\n- Add smooth animations and hover effects to member cards\n- Improve activities display with better styling and layout\n- Update responsive design for new member card and activity badge components\n- Add emoji icons for better visual hierarchy\n- Update README with new features documentation\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git commit:*)",
+      "Bash(git pull:*)",
+      "Bash(git reset:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
