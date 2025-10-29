@@ -515,7 +515,7 @@
       const item = foundList[index];
       const r = document.getElementById('result');
 
-      // Lọc hoạt động chỉ lấy những cái "Có"
+      // Hiển thị tất cả hoạt động
       const activityData = [
         { name: "Đóng góp Trung thu", value: item["Đóng góp trung thu"] },
         { name: "Sinh hoạt Câu lạc bộ", value: item["Sinh hoạt Câu lạc bộ"] },
@@ -523,12 +523,14 @@
         { name: "Hoạt động tại Bảo tàng (CS1)", value: item["Tham gia hoạt động tại bảo tàng tỉnh An Giang - Cơ sở 1"] }
       ];
 
+      // Lọc chỉ những cái "Có"
       const participatedActivities = activityData.filter(a =>
         a.value && (a.value.toString().toLowerCase() === 'có' || a.value.toString().toLowerCase() === 'yes')
       );
 
+      const activitiesList = participatedActivities.map(a => `<span class="activity-badge">${a.name}</span>`).join('');
       const activitiesHTML = participatedActivities.length > 0
-        ? participatedActivities.map(a => `<span class="activity-badge">${a.name}</span>`).join('')
+        ? `<div class="activities">${activitiesList}</div>`
         : '<p class="muted">Chưa tham gia hoạt động nào</p>';
 
       r.innerHTML = `
@@ -548,9 +550,7 @@
 
         <div class="divider"></div>
         <h2>🎯 Hoạt động đã tham gia</h2>
-        <div class="activities">
-          ${activitiesHTML}
-        </div>
+        ${activitiesHTML}
 
         <div class="poster-section">
           <div style="width: 100%; height: 500px; text-align: center;">
