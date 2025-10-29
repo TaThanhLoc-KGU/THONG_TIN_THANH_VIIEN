@@ -511,46 +511,60 @@
       `;
     }
 
-    function renderMemberDetails(index, foundList) {
-      const item = foundList[index];
-      const r = document.getElementById('result');
-
-      // Hiển thị tất cả hoạt động
-      const activityData = [
-        { name: "Đóng góp Trung thu", value: item["Đóng góp trung thu"] },
-        { name: "Sinh hoạt Câu lạc bộ", value: item["Sinh hoạt Câu lạc bộ"] },
-        { name: "Cài máy tại Trung tâm học liệu", value: item["Tham gia cài máy tính tại Trung tâm học liệu - Thực hành"] },
-        { name: "Hoạt động tại Bảo tàng (CS1)", value: item["Tham gia hoạt động tại bảo tàng tỉnh An Giang - Cơ sở 1"] }
-      ];
-
-      // Lọc chỉ những cái "Có"
-      const participatedActivities = activityData.filter(a =>
-        a.value && (a.value.toString().toLowerCase() === 'có' || a.value.toString().toLowerCase() === 'yes')
+    function isParticipated(value) {
+      if (!value) return false;
+      const v = normalizeText(value);
+      // Kiểm tra các dạng thường gặp: "Đã tham gia", "Có", "Yes", "1", "x"
+      // Đối với "Đã tham gia", sau normalize sẽ thành "da tham gia"
+      return (
+        v.startsWith('da ') ||        // "Đã tham gia" => "da tham gia"
+        v === 'co' ||                  // "Có"
+        v === 'yes' ||                 // "Yes"
+        v === 'x' ||                   // "x"
+        v === '1'                      // "1"
       );
+    }
 
-      const activitiesList = participatedActivities.map(a => `<span class="activity-badge">${a.name}</span>`).join('');
-      const activitiesHTML = participatedActivities.length > 0
-        ? `<div class="activities">${activitiesList}</div>`
-        : '<p class="muted">Chưa tham gia hoạt động nào</p>';
+    function renderMemberDetails(index, foundList) {
+    const item = foundList[index];
+    const r = document.getElementById('result');
 
-      r.innerHTML = `
-        <div style="margin-bottom: 20px;">
-          <button onclick="window.location.reload()" style="background: #6b7280; padding: 10px 16px; font-size: 14px;">← Quay lại danh sách</button>
-        </div>
+    // Danh sách cột hoạt động (giữ nguyên tên cột đúng như trong JSON/Excel)
+    const activityData = [
+      { name: "Đóng góp Trung thu", value: item["Đóng góp trung thu"] },
+      { name: "Sinh hoạt Câu lạc bộ", value: item["Sinh hoạt Câu lạc bộ"] },
+      { name: "Cài máy tại Trung tâm học liệu", value: item["Tham gia cài máy tính tại Trung tâm học liệu - Thực hành"] },
+      { name: "Hoạt động tại Bảo tàng (CS1)", value: item["Tham gia hoạt động tại bảo tàng tỉnh An Giang - Cơ sở 1"] }
+    ];
 
-        <h2>📋 Thông tin thành viên</h2>
-        <div class="grid">
-          <div class="row"><div class="label">Mã thành viên:</div><div class="value"><b>${item["Mã thành viên"] ?? "-"}</b></div></div>
-          <div class="row"><div class="label">Mã số sinh viên:</div><div class="value">${item["Mã số sinh viên"] ?? "-"}</div></div>
-          <div class="row"><div class="label">Họ và tên:</div><div class="value"><b>${item["Họ và tên"] ?? "-"}</b></div></div>
-          <div class="row"><div class="label">Lớp:</div><div class="value">${item["Lớp"] ?? "-"}</div></div>
-          <div class="row"><div class="label">Khoa:</div><div class="value">${item["Khoa"] ?? "-"}</div></div>
-          <div class="row"><div class="label">STT:</div><div class="value muted">${item["STT"] ?? "-"}</div></div>
-        </div>
+    const participatedActivities = activityData.filter(a => isParticipated(a.value));
 
-        <div class="divider"></div>
-        <h2>🎯 Hoạt động đã tham gia</h2>
-        ${activitiesHTML}
+    const activitiesList = participatedActivities
+      .map(a => `<span class="activity-badge">${a.name}</span>`)
+      .join('');
+
+    const activitiesHTML = participatedActivities.length > 0
+      ? `<div class="activities">${activitiesList}</div>`
+      : '<p class="muted">Chưa tham gia hoạt động nào</p>';
+
+    r.innerHTML = `
+      <div style="margin-bottom: 20px;">
+        <button onclick="window.location.reload()" style="background: #6b7280; padding: 10px 16px; font-size: 14px;">← Quay lại danh sách</button>
+      </div>
+
+      <h2>📋 Thông tin thành viên</h2>
+      <div class="grid">
+        <div class="row"><div class="label">Mã thành viên:</div><div class="value"><b>${item["Mã thành viên"] ?? "-"}</b></div></div>
+        <div class="row"><div class="label">Mã số sinh viên:</div><div class="value">${item["Mã số sinh viên"] ?? "-"}</div></div>
+        <div class="row"><div class="label">Họ và tên:</div><div class="value"><b>${item["Họ và tên"] ?? "-"}</b></div></div>
+        <div class="row"><div class="label">Lớp:</div><div class="value">${item["Lớp"] ?? "-"}</div></div>
+        <div class="row"><div class="label">Khoa:</div><div class="value">${item["Khoa"] ?? "-"}</div></div>
+        <div class="row"><div class="label">STT:</div><div class="value muted">${item["STT"] ?? "-"}</div></div>
+      </div>
+
+      <div class="divider"></div>
+      <h2>🎯 Hoạt động đã tham gia</h2>
+      ${activitiesHTML}
 
         <div class="poster-section">
           <div style="width: 100%; height: 500px; text-align: center;">
