@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tra cứu hoạt động CLB KCMC</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+      margin: 0;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    h1 {
+      margin: 20px 0 24px;
+      color: #1e3a8a;
+      font-size: 32px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+      line-height: 1.3;
+    }
+    .search-box {
+      margin: 20px 0 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 900px;
+    }
+    input {
+      flex: 1;
+      padding: 16px 18px;
+      border: 2px solid #d1d5db;
+      border-radius: 12px;
+      font-size: 18px;
+      outline: none;
+      background: #fff;
+      transition: all 0.3s ease;
+    }
+    input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px #bfdbfe;
+    }
+    input::placeholder {
+      color: #9ca3af;
+    }
+    button {
+      padding: 16px 28px;
+      background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    button:hover {
+      background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+      transform: translateY(-2px);
+    }
+    button:active {
+      transform: translateY(0);
+    }
+    .hint {
+      font-size: 15px;
+      color: #4b5563;
+      margin-top: 10px;
+      max-width: 900px;
+      width: 100%;
+      line-height: 1.6;
+    }
+    .hint code {
+      background: #e5e7eb;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+    }
+    .result {
+      margin-top: 28px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      padding: 28px;
+      width: 100%;
+      max-width: 900px;
+      display: none;
+      border-left: 5px solid #2563eb;
+    }
+    .result h2 {
+      color: #1e3a8a;
+      margin: 0 0 20px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 24px;
+    }
+    .row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 12px;
+      background: #f9fafb;
+      border-radius: 8px;
+      border-left: 3px solid #e5e7eb;
+    }
+    .row:hover {
+      background: #f3f4f6;
+      border-left-color: #2563eb;
+    }
+    .label {
+      color: #4b5563;
+      font-weight: 700;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .value {
+      color: #111827;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .divider {
+      margin: 24px 0;
+      border-top: 2px dashed #e5e7eb;
+    }
+    .notfound {
+      margin-top: 20px;
+      color: #dc2626;
+      font-weight: 600;
+      font-size: 18px;
+      max-width: 900px;
+      width: 100%;
+    }
+    .muted {
+      color: #6b7280;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .muted b {
+      color: #374151;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 28px;
+        margin: 16px 0 20px;
+      }
+      .search-box {
+        max-width: 100%;
+      }
+      input {
+        font-size: 16px;
+        padding: 14px 16px;
+      }
+      button {
+        font-size: 15px;
+        padding: 14px 24px;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 12px 16px;
+      }
+      .result {
+        padding: 20px;
+      }
+      .result h2 {
+        font-size: 20px;
+      }
+      .row {
+        padding: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+      h1 {
+        font-size: 24px;
+        margin: 12px 0 16px;
+      }
+      .search-box {
+        gap: 10px;
+      }
+      input {
+        font-size: 16px;
+        padding: 12px 14px;
+      }
+      button {
+        font-size: 14px;
+        padding: 12px 20px;
+      }
+      .hint {
+        font-size: 14px;
+      }
+      .result {
+        padding: 16px;
+        border-left-width: 4px;
+      }
+      .result h2 {
+        font-size: 18px;
+        margin-bottom: 16px;
+      }
+      .row {
+        padding: 8px;
+      }
+      .label {
+        font-size: 13px;
+      }
+      .value {
+        font-size: 16px;
+      }
+      .divider {
+        margin: 16px 0;
+      }
+      .muted {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Tra cứu hoạt động CLB KCMC</h1>
+
+  <div class="search-box">
+    <input id="searchInput" type="text" placeholder="Nhập Họ tên / MSSV / Mã thành viên (VD: KCMC001)..." />
+    <button id="searchBtn">Tìm kiếm</button>
+  </div>
+  <div class="hint">Gõ một phần tên cũng được (không cần dấu). Có thể tra theo <b>MSSV</b> hoặc <b>Mã thành viên</b> dạng <code>KCMC00...</code>.</div>
+
+  <div id="result" class="result"></div>
+  <div id="notfound" class="notfound"></div>
+
+  <script>
+    let members = [];
+
+    // Tải dữ liệu JSON (đặt file clb_kcmc_data.json cùng thư mục index.html)
+    fetch('clb_kcmc_data.json')
+      .then(r => r.json())
+      .then(data => { members = data; })
+      .catch(err => console.error('Không thể tải dữ liệu:', err));
+
+    function normalizeText(text) {
+      return String(text ?? '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim();
+    }
+
+    function renderResult(item) {
+      const r = document.getElementById('result');
+      r.style.display = 'block';
+      r.innerHTML = `
+        <h2>Thông tin thành viên</h2>
+        <div class="grid">
+          <div class="row"><div class="label">Mã thành viên:</div><div class="value"><b>${item["Mã thành viên"] ?? "-"}</b></div></div>
+          <div class="row"><div class="label">Mã số sinh viên:</div><div class="value">${item["Mã số sinh viên"] ?? "-"}</div></div>
+          <div class="row"><div class="label">Họ và tên:</div><div class="value"><b>${item["Họ và tên"] ?? "-"}</b></div></div>
+          <div class="row"><div class="label">Lớp:</div><div class="value">${item["Lớp"] ?? "-"}</div></div>
+          <div class="row"><div class="label">Khoa:</div><div class="value">${item["Khoa"] ?? "-"}</div></div>
+          <div class="row"><div class="label">STT:</div><div class="value muted">${item["STT"] ?? "-"}</div></div>
+        </div>
+
+        <div class="divider"></div>
+        <h2>Trạng thái tham gia</h2>
+        <div class="grid">
+          <div class="row"><div class="label">Đóng góp Trung thu:</div><div class="value">${item["Đóng góp trung thu"] ?? "-"}</div></div>
+          <div class="row"><div class="label">Sinh hoạt Câu lạc bộ:</div><div class="value">${item["Sinh hoạt Câu lạc bộ"] ?? "-"}</div></div>
+          <div class="row"><div class="label">Cài máy tại Trung tâm học liệu:</div><div class="value">${item["Tham gia cài máy tính tại Trung tâm học liệu - Thực hành"] ?? "-"}</div></div>
+          <div class="row"><div class="label">Hoạt động tại Bảo tàng (CS1):</div><div class="value">${item["Tham gia hoạt động tại bảo tàng tỉnh An Giang - Cơ sở 1"] ?? "-"}</div></div>
+        </div>
+      `;
+    }
+
+    function searchMember() {
+      const input = document.getElementById('searchInput');
+      const keyword = normalizeText(input.value);
+      const resultDiv = document.getElementById('result');
+      const notfoundDiv = document.getElementById('notfound');
+
+      resultDiv.style.display = 'none';
+      resultDiv.innerHTML = '';
+      notfoundDiv.textContent = '';
+
+      if (!keyword) {
+        notfoundDiv.textContent = '⚠️ Vui lòng nhập Họ tên / MSSV / Mã thành viên để tra cứu.';
+        return;
+      }
+
+      // Tìm theo Họ và tên, MSSV, hoặc Mã thành viên (KCMC00..)
+      const foundList = members.filter(m => {
+        const name = normalizeText(m["Họ và tên"]);
+        const mssv = normalizeText(m["Mã số sinh viên"]);
+        const maTV = normalizeText(m["Mã thành viên"]);
+        return name.includes(keyword) || mssv.includes(keyword) || maTV.includes(keyword);
+      });
+
+      if (foundList.length === 0) {
+        notfoundDiv.textContent = '❌ Không tìm thấy thông tin phù hợp.';
+        return;
+      }
+
+      // Nếu nhiều kết quả, ưu tiên khớp chính xác mã thành viên/mssv trước
+      const exact = foundList.find(m =>
+        normalizeText(m["Mã thành viên"]) === keyword ||
+        normalizeText(m["Mã số sinh viên"]) === keyword
+      );
+      renderResult(exact || foundList[0]);
+
+      // Nếu nhiều hơn 1 kết quả, gợi ý thêm
+      if (!exact && foundList.length > 1) {
+        const suggestion = foundList.slice(1, 6).map(x =>
+          `• ${x["Họ và tên"]} — ${x["Mã số sinh viên"]} — ${x["Mã thành viên"]}`
+        ).join('<br/>');
+        resultDiv.innerHTML += `<div class="divider"></div><div class="muted"><b>Có ${foundList.length} kết quả.</b><br/>Gợi ý thêm:<br/>${suggestion}</div>`;
+      }
+    }
+
+    // Bind sự kiện
+    document.getElementById('searchBtn').addEventListener('click', searchMember);
+    document.getElementById('searchInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') searchMember();
+    });
+  </script>
+</body>
+</html>
